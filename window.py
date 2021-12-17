@@ -22,50 +22,77 @@ n: north
 e: east
 s: south
 w: west
-X: all directions
 
 other:
 0: empty (middle square)
 Y: Joker ?
 """
 
+ROTATE_MATRIX = [
+    56, 48, 40, 32, 24, 16,  8,  0, 
+    57, 49, 41, 33, 25, 17,  9,  1, 
+    58, 50, 42, 34, 26, 18, 10,  2, 
+    59, 51, 43, 35, 27, 19, 11,  3, 
+    60, 52, 44, 36, 28, 20, 12,  4, 
+    61, 53, 45, 37, 29, 21, 13,  5, 
+    62, 54, 46, 38, 30, 22, 14,  6, 
+    63, 55, 47, 39, 31, 23, 15,  7,
+]
+
+CORRESP = {	"wnes": ["wnes", "swne", "eswn", "nesw"],
+			"nse": ["esn", "sen", "nse", "sne"],
+			"swe": ["esw", "wes", "swe"],
+			"new": ["wne", "ewn", "new", "ews"],
+			"nsw": ["wns", "nws", "nsw", "snw"],
+			"se": ["es", "se"],
+			"sw": ["ws", "sw"],
+			"ns": ["sn", "ns"],
+			"ne": ["en", "ne"],
+			"ew": ["ew", "we"],
+			"nw": ["wn", "nw"],
+			"0": "0"
+}
+
+
+
+
 class Window:
 	def __init__(self):
-		self.tab_a = ["se;sw;se;swe;ew;swe;swe;swe",
-					"nse;swen;swen;swen;ovsw;nse;swen;swen",
-					"nse;swen;swen;swen;swen;swen;swen;swen",
-					"ns;trne;swen;swen;swen;swen;swen;swen",
-					"nse;swe;swen;swen;swen;new;swen;swen",
-					"ne;swen;swen;swen;nsw;cjes;swen;swen",
-					"se;swen;swen;ibnw;nse;swen;swen;new",
-					"nse;swen;swen;swe;swen;swen;nsw;0"]
+		self.tab_a = [["se","sw","se","swe","ew","swe","swe","swe"],
+					["nse","swen","swen","swen","ovsw","nse","swen","swen"],
+					["nse","swen","swen","swen","swen","swen","swen","swen"],
+					["ns","trne","swen","swen","swen","swen","swen","swen"],
+					["nse","swe","swen","swen","swen","new","swen","swen"],
+					["ne","swen","swen","swen","nsw","cjes","swen","swen"],
+					["se","swen","swen","ibnw","nse","swen","swen","new"],
+					["nse","swen","swen","swe","swen","swen","nsw","0"]]
 
-		self.tab_b = ["nse;swen;swen;swen;swen;swen;nsw;0",
-					"nse;swen;swen;swen;nsw;cvne;swen;swe",
-					"nse;obnw;nse;swen;swen;swe;swen;swen",
-					"nse;swe;swen;swen;new;swen;swen;swen",
-					"ne;swen;new;swen;irsw;nse;swen;swen",
-					"se;swen;Ysw;nse;swen;swen;new;swen",
-					"nse;swen;swen;swen;swen;nsw;tjes;swen",
-					"ne;new;new;nw;ne;new;new;new"]
+		self.tab_b = [["nse","swen","swen","swen","swen","swen","nsw","0"],
+					["nse","swen","swen","swen","nsw","cvne","swen","swe"],
+					["nse","obnw","nse","swen","swen","swe","swen","swen"],
+					["nse","swe","swen","swen","new","swen","swen","swen"],
+					["ne","swen","new","swen","irsw","nse","swen","swen"],
+					["se","swen","YYsw","nse","swen","swen","new","swen"],
+					["nse","swen","swen","swen","swen","nsw","tjes","swen"],
+					["ne","new","new","nw","ne","new","new","new"]]
 
-		self.tab_c = ["sw;se;swe;ew;swe;swe;swe;sw",
-					"swen;swen;nsw;ores;swen;swen;swen;nw",
-					"swen;swen;swen;swen;swen;swen;new;sw",
-					"swen;swen;swen;swen;swen;swen;tvsw;ns",
-					"swen;cbnw;nse;swen;swen;swen;swen;nsw",
-					"swen;swe;swen;swen;swen;swen;swen;nsw",
-					"new;swen;swen;nsw;ijne;swen;swen;nsw",
-					"0;nse;swen;swen;swe;swen;swen;nsw"]
+		self.tab_c = [["sw","se","swe","ew","swe","swe","swe","sw"],
+					["swen","swen","nsw","ores","swen","swen","swen","nw"],
+					["swen","swen","swen","swen","swen","swen","new","sw"],
+					["swen","swen","swen","swen","swen","swen","tvsw","ns"],
+					["swen","cbnw","nse","swen","swen","swen","swen","nsw"],
+					["swen","swe","swen","swen","swen","swen","swen","nsw"],
+					["new","swen","swen","nsw","ijne","swen","swen","nsw"],
+					["0","nse","swen","swen","swe","swen","swen","nsw"]]
 
-		self.tab_d = ["0;nse;swen;swen;swen;swen;swen;nsw",
-					"swe;swen;swen;new;swen;swen;swen;nsw",
-					"swen;swen;nsw;ives;swen;swen;swen;nsw",
-					"swen;swen;new;swen;nsw;crne;swen;nw",
-					"swen;swen;tbsw;nse;swen;swe;swen;sw",
-					"swen;swen;swen;swen;ojnw;nse;swen;nsw",
-					"swen;swen;swen;swen;swe;swen;swen;nsw",
-					"new;nw;ne;new;new;new;new;nw"]
+		self.tab_d = [["0","nse","swen","swen","swen","swen","swen","nsw"],
+					["swe","swen","swen","new","swen","swen","swen","nsw"],
+					["swen","swen","nsw","ives","swen","swen","swen","nsw"],
+					["swen","swen","new","swen","nsw","crne","swen","nw"],
+					["swen","swen","tbsw","nse","swen","swe","swen","sw"],
+					["swen","swen","swen","swen","ojnw","nse","swen","nsw"],
+					["swen","swen","swen","swen","swe","swen","swen","nsw"],
+					["new","nw","ne","new","new","new","new","nw"]]
 
 		self.to_draw = {
 					"Robot vert" : [(1064, 100), (140, 40), (34,177,76), "bot_v",],
@@ -76,7 +103,7 @@ class Window:
 					"Submit":      [(1154, 600), (140, 40), (195,195,195), "but_S"]
 				}
 
-		self.forms = "icoYt"
+		self.forms = "icotYicot"
 		self.colors = "bvjr"
 		self.directions = "swen"
 
@@ -93,6 +120,8 @@ class Window:
 
 		self.fenetre = None
 
+		self.angle = 0
+
 		# case de 64*64 pixels
 
 		self.board_a = (self.tab_a, self.tab_c)
@@ -102,39 +131,162 @@ class Window:
 
 		self.movements = 0
 
-	def display_board(self, fenetre):
+
+
+
+	def rotate_tabs(self, tab, times):
+
+		new_board = []
+		line = []
+		for _ in range(times):
+			if _ != 0:
+				tab = new_board
+				new_board = []
+			for index in ROTATE_MATRIX:
+				line.append(tab[index // 8][index % 8])
+				if len(line) == 8:
+					new_board.append(line)
+					line = []
+
+		new_board = self.rotate_tiles(times, new_board)
+
+		return new_board 
+
+
+
+
+	def rotate_tiles(self, rotation, new_board):
+		reference = "neswnesw"
+		new_tile = ""
+		final_tile = ""
+		for Y, line in enumerate(new_board):
+			for X, tile in enumerate(line):
+				if tile != "swen":
+					for letter in tile:
+						if letter in reference:
+							new_tile += reference[reference.find(letter) + rotation]
+						else:
+							new_tile += letter
+					
+					# tiles will have the letter inverted after a rotation, thus not found because the images don't have the right name
+					entered = True
+					key = ""
+					for key in CORRESP:
+						condition = new_tile[0] in self.forms or new_tile == "0"
+						if condition:
+							final_tile = new_tile
+						else:
+							if new_tile in CORRESP[key]:
+								entered = True
+								final_tile = key
+							elif new_tile not in CORRESP[key] and not entered:
+								final_tile = new_tile
+					entered = False
+
+					new_board[Y][X] = final_tile
+					new_tile = ""
+		return new_board
+
+	a=[['se', 'swe', 'sw', 'se', 'swe', 'swe', 'swe', 'swe', 'swe', 'sw', 'se', 'swe', 'swe', 'swe', 'swe', 'sw'], 
+	['nse', 'swen', 'swen', 'swen', 'nse', 'nse', 'swen', 'swen', 'swen', 'swen', 'swen', 'sw', 'sw', 'swen', 'swen', 'nw'], 
+	['nse', 'swen', 'nse', 'nse', 'swen', 'swe', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'sw'], 
+	['ne', 'swen', 'swe', 'swen', 'swen', 'swen', 'swen', 'swen', 'sw', 'sw', 'swen', 'swen', 'swen', 'swen', 'swen', 'sw'], 
+	['se', 'swen', 'swen', 'se', 'nse', 'swen', 'new', 'swen', 'swen', 'swe', 'new', 'swen', 'swen', 'swen', 'new', 'ns'], 
+	['nse', 'new', 'swen', 'swe', 'swen', 'swe', 'swe', 'swen', 'swen', 'swen', 'ns', 'nse', 'swen', 'swen', 'swe', 'swe'], 
+	['nse', 'nse', 'nse', 'swen', 'swen', 'swen','swen', 'new', 'new', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'new'], 
+	['nse', 'swen', 'swen', 'swen', 'swen', 'swen', 'nse', 'nse', 'new', 'nse', 'swen', 'swen', 'swen', 'swen', 'swen', 'nse'], 
+	['nse', 'swen', 'swen', 'swen', 'swen', 'swen', 'nse', 'nse', '', 'nse', 'swen', 'swen', 'swen', 'swen', 'swen', 'nw'], 
+	['ne', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swe', 'swe', 'swen', 'swe', 'swe', 'swen', 'swen', 'swen', 'sw'], 
+	['se', 'swen', 'swen', 'se', 'nse', 'new', 'swen', 'swen', 'swen', 'swen', 'swen', 'swe', 'swen', 'swen', 'new', 'new'], 
+	['nse', 'swen', 'swen', 'swe', 'swen', 'swe', 'nse', 'swen', 'swen', 'new', 'swen', 'swen', 'swen', 'swen', 'new', 'ns'], 
+	['nse', 'nse', 'nse', 'swen', 'new', 'swen', 'swen', 'swen', 'ns', 'ns','swen', 'swen', 'swen', 'swen', 'swen', 'ns'], 
+	['nse', 'swen', 'swe', 'swe', 'swe', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'ns'], 
+	['nse', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'ns', 'nse', 'swen', 'nse'], 
+	['ne', 'new', 'new', 'nw', 'ne', 'new', 'new', 'new', 'new', 'new', 'new', 'new', 'new', 'nw', 'ne', 'nw']]
+
+	tmp=[['sw', 'se', 'swe', 'ew', 'swe', 'swe', 'swe', 'sw'], 
+	['swen', 'swen', 'nsw', 'ores', 'swen', 'swen', 'swen', 'nw'], 
+	['swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'new', 'sw'], 
+	['swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'tvsw', 'ns'],
+	['swen', 'cbnw', 'nse', 'swen', 'swen', 'swen', 'swen', 'nsw'], 
+	['swen', 'swe', 'swen', 'swen', 'swen', 'swen', 'swen', 'nsw'], 
+	['new', 'swen', 'swen', 'nsw', 'ijne', 'swen', 'swen', 'nsw'], 
+	['0', 'nse', 'swen', 'swen', 'swe', 'swen', 'swen', 'nsw']]
+
+
+
+	def display_board(self, fenetre, angle):
 
 		for Y, line in enumerate(self.board):
 			for X, case in enumerate(line):
-				img = pygame.transform.scale(pygame.image.load(f"img/{case}.png"), (64, 64))
+				try:
+					if case[0] in self.forms:
+						img = pygame.transform.scale(pygame.image.load(f"img/{case[0:2]}_.png"), (64, 64))
+					else:
+						img = pygame.transform.scale(pygame.image.load(f"img/{case}.png"), (64, 64))
+				except Exception as e:
+					"""
+					print("erreur")
+					print("f"+case+"f")
+					print(self.board)
+					"""
+					print(e)
+					quit()
+				if angle != 0:
+					img = pygame.transform.rotate(img, angle)
+					#new_rect = img.get_rect(center = img.get_rect(topleft = topleft).center)
 				fenetre.blit(img, (X*64, Y*64))
 
+		# display the target in the middle of the board
 		self.display_anything(self.fenetre, (480, 480), (64, 64), f"img/{self.to_reach}.png")
 
 
 
-	def init_board(self):
-		self.board = self.fusion_tab()
-		self.to_reach = self.forms[random.randint(0, 3)] + self.colors[random.randint(0, 3)]
-		if "Y" in self.to_reach:
-			self.to_reach = "Y"
 
+	def fusion_tab(self, rotations):
+		order = []
+		if rotations == 1:
+			order = (self.tab_b, self.tab_a, 
+					self.tab_d, self.tab_c)
 
+		elif rotations == 2:
+			order = (self.tab_d, self.tab_b, 
+					self.tab_c, self.tab_a)
 
-	def fusion_tab(self):
+		elif rotations == 3:
+			order = (self.tab_c, self.tab_d, 
+					self.tab_a, self.tab_b)
+
+		elif rotations == 0:
+			order = (self.tab_a, self.tab_c, 
+					self.tab_b, self.tab_d)
+
 		tab1 = []
 		tab2 = []
-		for i in range(len(self.tab_a)):
-			tab1.append(self.tab_a[i] + ";" + self.tab_c[i])
-			tab2.append(self.tab_b[i] + ";" + self.tab_d[i])
-
-		for i in range(len(tab1)):
-			tab1[i] = tab1[i].split(";")
-		for i in range(len(tab2)):
-			tab2[i] = tab2[i].split(";")
+		for i in range(8):
+			tab1.append(order[0][i] + order[1][i])
+			tab2.append(order[2][i] + order[3][i])
 
 		return tab1 + tab2
 
+
+
+	def init_board(self):
+		rotations = random.randint(0, 3)
+		#rotations = 0
+		self.angle = rotations * 90 # angle of rotation for when I will blit the picture
+		print("Nombre de rotations: ", rotations)
+
+		if rotations != 0:
+			self.tab_a = self.rotate_tabs(self.tab_a, rotations)
+			self.tab_b = self.rotate_tabs(self.tab_b, rotations)
+			self.tab_c = self.rotate_tabs(self.tab_c, rotations)
+			self.tab_d = self.rotate_tabs(self.tab_d, rotations)
+		self.board = self.fusion_tab(rotations)
+
+		self.to_reach = self.forms[random.randint(0, 8)] + self.colors[random.randint(0, 3)]
+		if "Y" in self.to_reach:
+			self.to_reach = "Y"
 
 
 
@@ -303,11 +455,14 @@ class Window:
 					print(f"Bouton {var} pressé.")
 
 
+
+
 	def set_robot_false(self):
 		self.bot_v = False
 		self.bot_b = False
 		self.bot_j = False
 		self.bot_r = False
+
 
 
 	def display_anything(self, fenetre, coords, scale, image):
@@ -316,8 +471,9 @@ class Window:
 
 
 
+
 	def reset_board(self):
-		self.movements = 0;
+		self.movements = 0
 		# stocker les coordonnées initiales des robots pour les remettres à zéro ici.
 
 
@@ -329,8 +485,6 @@ def main():
 	hauteur = 1024
 	fenetre = pygame.display.set_mode((largeur, hauteur))
 	pygame.display.set_caption('Rasende roboter')
-	#clock = pygame.time.Clock()
-	#clock.tick(60)
 
 	win = Window()
 	fenetre.fill((0,0,0))
@@ -343,7 +497,7 @@ def main():
 
 
 	while True:
-		win.display_board(fenetre)
+		win.display_board(fenetre, win.angle)
 		win.disp_robot(fenetre)
 		win.record_keys()
 		win.init_inputs(fenetre)
@@ -357,18 +511,17 @@ def main():
 if __name__ == '__main__':
 	main()
 
-# / modifier le design des sprites? trait gris ? bords ronds ?
-# / permettre a thomas de l'utiliser comme un outil: acces au tableau, a la position de pions...
-# / implémenter les 3 autres robots /!\ les robots ont des hitbox (issou)
-# / mettre des boites de dialogue
-# O générer une cible aléatoire
-# O faire la cible joker
-# / compter les points
-# / bouton revenir a la case départ?
-# / timer qui s'affiche ? en lien avec au-dessus
-# / faire tourner les boards a,b,c,d
-
-
-
-
-
+#  / modifier le design des sprites? trait gris ? bords ronds ?
+#! / pour thomas: couleur du symbole, le type de symbole, 
+#  / permettre a thomas de l'utiliser comme un outil: acces au tableau, a la position de pions...
+#! / implémenter les 3 autres robots /!\ les robots ont des hitbox (issou)
+#  / mettre des boites de dialogue
+#  O générer une cible aléatoire
+#  O faire la cible joker
+#! / compter les points
+#! / bouton revenir a la case départ?
+#! / timer qui s'affiche ? en lien avec au-dessus
+#! O faire tourner les boards a,b,c,d
+#! O Faire tourner les cases en fonction du nombre de rotations !
+#! O Arranger les lettres des cases pour charger les images
+#! / rotation pas bonne pour certaines tiles (presque toutes en fait)
