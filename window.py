@@ -28,6 +28,8 @@ other:
 Y: Joker ?
 """
 
+DICO = {"b":"bleu", "v":"vert", "r":"rouge", "j":"jaune"}
+
 ROTATE_MATRIX = [
     56, 48, 40, 32, 24, 16,  8,  0, 
     57, 49, 41, 33, 25, 17,  9,  1, 
@@ -38,6 +40,25 @@ ROTATE_MATRIX = [
     62, 54, 46, 38, 30, 22, 14,  6, 
     63, 55, 47, 39, 31, 23, 15,  7,
 ]
+ROTATE_MATRIX_16 = [
+		240, 224, 208, 192, 176, 160, 144, 128, 112, 96, 80, 64, 48, 32, 16, 0, 
+		241, 225, 209, 193, 177, 161, 145, 129, 113, 97, 81, 65, 49, 33, 17, 1, 
+		242, 226, 210, 194, 178, 162, 146, 130, 114, 98, 82, 66, 50, 34, 18, 2, 
+		243, 227, 211, 195, 179, 163, 147, 131, 115, 99, 83, 67, 51, 35, 19, 3, 
+		244, 228, 212, 196, 180, 164, 148, 132, 116, 100, 84, 68, 52, 36, 20, 4, 
+		245, 229, 213, 197, 181, 165, 149, 133, 117, 101, 85, 69, 53, 37, 21, 5, 
+		246, 230, 214, 198, 182, 166, 150, 134, 118, 102, 86, 70, 54, 38, 22, 6, 
+		247, 231, 215, 199, 183, 167, 151, 135, 119, 103, 87, 71, 55, 39, 23, 7, 
+		248, 232, 216, 200, 184, 168, 152, 136, 120, 104, 88, 72, 56, 40, 24, 8, 
+		249, 233, 217, 201, 185, 169, 153, 137, 121, 105, 89, 73, 57, 41, 25, 9, 
+		250, 234, 218, 202, 186, 170, 154, 138, 122, 106, 90, 74, 58, 42, 26, 10, 
+		251, 235, 219, 203, 187, 171, 155, 139, 123, 107, 91, 75, 59, 43, 27, 11, 
+		252, 236, 220, 204, 188, 172, 156, 140, 124, 108, 92, 76, 60, 44, 28, 12, 
+		253, 237, 221, 205, 189, 173, 157, 141, 125, 109, 93, 77, 61, 45, 29, 13, 
+		254, 238, 222, 206, 190, 174, 158, 142, 126, 110, 94, 78, 62, 46, 30, 14, 
+		255, 239, 223, 207, 191, 175, 159, 143, 127, 111, 95, 79, 63, 47, 31, 15
+]
+
 
 CORRESP = {	"wnes": ["wnes", "swne", "eswn", "nesw"],
 			"nse": ["esn", "sen", "nse", "sne"],
@@ -53,10 +74,12 @@ CORRESP = {	"wnes": ["wnes", "swne", "eswn", "nesw"],
 			"0": "0"
 }
 
+SHAPES = "icotYicot"
+COLORS = "bvrj"
 
 
 
-class Window:
+class Board:
 	def __init__(self):
 		self.tab_a = [["se","sw","se","swe","ew","swe","swe","swe"],
 					["nse","swen","swen","swen","ovsw","nse","swen","swen"],
@@ -95,203 +118,81 @@ class Window:
 					["new","nw","ne","new","new","new","new","nw"]]
 
 		self.to_draw = {
-					"Robot vert" : [(1064, 100), (140, 40), (34,177,76), "bot_v",],
-					"Robot rouge": [(1244, 100), (140, 40), (237,28,36), "bot_r"],
-					"Robot bleu" : [(1064, 200), (140, 40), (0,162,232), "bot_b"],
-					"Robot jaune": [(1244, 200), (140, 40), (255,242,0), "bot_j"],
-					"Reset":       [(1154, 400), (140, 40), (195,195,195), "but_R"],
-					"Submit":      [(1154, 600), (140, 40), (195,195,195), "but_S"]
+					"Robot vert" : [(1064, 100), (140, 40), (34,177,76), "bot_v", False],
+					"Robot rouge": [(1244, 100), (140, 40), (237,28,36), "bot_r", False],
+					"Robot bleu" : [(1064, 200), (140, 40), (0,162,232), "bot_b", False],
+					"Robot jaune": [(1244, 200), (140, 40), (255,242,0), "bot_j", False],
+					"Reset":       [(1154, 400), (140, 40), (195,195,195), "but_R", None],
+					"Submit":      [(1154, 600), (140, 40), (195,195,195), "but_S", None]
 				}
 
-		self.forms = "icotYicot"
-		self.colors = "bvjr"
-		self.directions = "swen"
 
 		self.south = False
 		self.north = False
 		self.west = False
 		self.east = False
-		self.direc = None
 
-		self.bot_v = False
-		self.bot_b = True
-		self.bot_j = False
-		self.bot_r = False
-
-		self.fenetre = None
-
-		self.angle = 0
-
-		# case de 64*64 pixels
-
-		self.board_a = (self.tab_a, self.tab_c)
-		self.board_b = (self.tab_b, self.tab_d)
 		self.board = []
-		self.bot_position = []
 
 		self.movements = 0
 
-
-
-
-	def rotate_tabs(self, tab, times):
-
-		new_board = []
-		line = []
-		for _ in range(times):
-			if _ != 0:
-				tab = new_board
-				new_board = []
-			for index in ROTATE_MATRIX:
-				line.append(tab[index // 8][index % 8])
-				if len(line) == 8:
-					new_board.append(line)
-					line = []
-
-		new_board = self.rotate_tiles(times, new_board)
-
-		return new_board 
+		self.moving_bot = None
 
 
 
 
-	def rotate_tiles(self, rotation, new_board):
-		reference = "neswnesw"
-		new_tile = ""
-		final_tile = ""
-		for Y, line in enumerate(new_board):
-			for X, tile in enumerate(line):
-				if tile != "swen":
-					for letter in tile:
-						if letter in reference:
-							new_tile += reference[reference.find(letter) + rotation]
-						else:
-							new_tile += letter
-					
-					# tiles will have the letter inverted after a rotation, thus not found because the images don't have the right name
-					entered = True
-					key = ""
-					for key in CORRESP:
-						condition = new_tile[0] in self.forms or new_tile == "0"
-						if condition:
-							final_tile = new_tile
-						else:
-							if new_tile in CORRESP[key]:
-								entered = True
-								final_tile = key
-							elif new_tile not in CORRESP[key] and not entered:
-								final_tile = new_tile
-					entered = False
-
-					new_board[Y][X] = final_tile
-					new_tile = ""
-		return new_board
-
-	a=[['se', 'swe', 'sw', 'se', 'swe', 'swe', 'swe', 'swe', 'swe', 'sw', 'se', 'swe', 'swe', 'swe', 'swe', 'sw'], 
-	['nse', 'swen', 'swen', 'swen', 'nse', 'nse', 'swen', 'swen', 'swen', 'swen', 'swen', 'sw', 'sw', 'swen', 'swen', 'nw'], 
-	['nse', 'swen', 'nse', 'nse', 'swen', 'swe', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'sw'], 
-	['ne', 'swen', 'swe', 'swen', 'swen', 'swen', 'swen', 'swen', 'sw', 'sw', 'swen', 'swen', 'swen', 'swen', 'swen', 'sw'], 
-	['se', 'swen', 'swen', 'se', 'nse', 'swen', 'new', 'swen', 'swen', 'swe', 'new', 'swen', 'swen', 'swen', 'new', 'ns'], 
-	['nse', 'new', 'swen', 'swe', 'swen', 'swe', 'swe', 'swen', 'swen', 'swen', 'ns', 'nse', 'swen', 'swen', 'swe', 'swe'], 
-	['nse', 'nse', 'nse', 'swen', 'swen', 'swen','swen', 'new', 'new', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'new'], 
-	['nse', 'swen', 'swen', 'swen', 'swen', 'swen', 'nse', 'nse', 'new', 'nse', 'swen', 'swen', 'swen', 'swen', 'swen', 'nse'], 
-	['nse', 'swen', 'swen', 'swen', 'swen', 'swen', 'nse', 'nse', '', 'nse', 'swen', 'swen', 'swen', 'swen', 'swen', 'nw'], 
-	['ne', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swe', 'swe', 'swen', 'swe', 'swe', 'swen', 'swen', 'swen', 'sw'], 
-	['se', 'swen', 'swen', 'se', 'nse', 'new', 'swen', 'swen', 'swen', 'swen', 'swen', 'swe', 'swen', 'swen', 'new', 'new'], 
-	['nse', 'swen', 'swen', 'swe', 'swen', 'swe', 'nse', 'swen', 'swen', 'new', 'swen', 'swen', 'swen', 'swen', 'new', 'ns'], 
-	['nse', 'nse', 'nse', 'swen', 'new', 'swen', 'swen', 'swen', 'ns', 'ns','swen', 'swen', 'swen', 'swen', 'swen', 'ns'], 
-	['nse', 'swen', 'swe', 'swe', 'swe', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'ns'], 
-	['nse', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'ns', 'nse', 'swen', 'nse'], 
-	['ne', 'new', 'new', 'nw', 'ne', 'new', 'new', 'new', 'new', 'new', 'new', 'new', 'new', 'nw', 'ne', 'nw']]
-
-	tmp=[['sw', 'se', 'swe', 'ew', 'swe', 'swe', 'swe', 'sw'], 
-	['swen', 'swen', 'nsw', 'ores', 'swen', 'swen', 'swen', 'nw'], 
-	['swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'new', 'sw'], 
-	['swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'tvsw', 'ns'],
-	['swen', 'cbnw', 'nse', 'swen', 'swen', 'swen', 'swen', 'nsw'], 
-	['swen', 'swe', 'swen', 'swen', 'swen', 'swen', 'swen', 'nsw'], 
-	['new', 'swen', 'swen', 'nsw', 'ijne', 'swen', 'swen', 'nsw'], 
-	['0', 'nse', 'swen', 'swen', 'swe', 'swen', 'swen', 'nsw']]
-
-
-
-	def display_board(self, fenetre, angle):
-
+	def display_board(self, fenetre):
+		fenetre.fill((0,0,0))
 		for Y, line in enumerate(self.board):
 			for X, case in enumerate(line):
 				try:
-					if case[0] in self.forms:
+					if case[0] in SHAPES:
 						img = pygame.transform.scale(pygame.image.load(f"img/{case[0:2]}_.png"), (64, 64))
 					else:
 						img = pygame.transform.scale(pygame.image.load(f"img/{case}.png"), (64, 64))
 				except Exception as e:
 					"""
-					print("erreur")
-					print("f"+case+"f")
+					print("|"+case+"|")
 					print(self.board)
 					"""
 					print(e)
 					quit()
-				if angle != 0:
-					img = pygame.transform.rotate(img, angle)
-					#new_rect = img.get_rect(center = img.get_rect(topleft = topleft).center)
 				fenetre.blit(img, (X*64, Y*64))
 
+		for i in self.to_draw:
+			if self.to_draw[i][4]:
+				coord = self.to_draw[i][0]
+				size = self.to_draw[i][1]
+				pygame.draw.rect(fenetre, (255,255,255), (coord[0] - 5, coord[1] - 5, size[0] + 10, size[1] + 10), width=2)
 		# display the target in the middle of the board
-		self.display_anything(self.fenetre, (480, 480), (64, 64), f"img/{self.to_reach}.png")
+		display_anything(fenetre, (480, 480), (64, 64), f"img/{self.target}.png")
 
 
 
 
-	def fusion_tab(self, rotations):
-		order = []
-		if rotations == 1:
-			order = (self.tab_b, self.tab_a, 
-					self.tab_d, self.tab_c)
-
-		elif rotations == 2:
-			order = (self.tab_d, self.tab_b, 
-					self.tab_c, self.tab_a)
-
-		elif rotations == 3:
-			order = (self.tab_c, self.tab_d, 
-					self.tab_a, self.tab_b)
-
-		elif rotations == 0:
-			order = (self.tab_a, self.tab_c, 
-					self.tab_b, self.tab_d)
-
+	def fusion_tab(self):
 		tab1 = []
 		tab2 = []
 		for i in range(8):
-			tab1.append(order[0][i] + order[1][i])
-			tab2.append(order[2][i] + order[3][i])
-
+			tab1.append(self.tab_a[i] + self.tab_c[i])
+			tab2.append(self.tab_b[i] + self.tab_d[i])
 		return tab1 + tab2
 
 
 
-	def init_board(self):
-		rotations = random.randint(0, 3)
-		#rotations = 0
-		self.angle = rotations * 90 # angle of rotation for when I will blit the picture
-		print("Nombre de rotations: ", rotations)
+	def init_board(self, fenetre):
 
-		if rotations != 0:
-			self.tab_a = self.rotate_tabs(self.tab_a, rotations)
-			self.tab_b = self.rotate_tabs(self.tab_b, rotations)
-			self.tab_c = self.rotate_tabs(self.tab_c, rotations)
-			self.tab_d = self.rotate_tabs(self.tab_d, rotations)
-		self.board = self.fusion_tab(rotations)
-
-		self.to_reach = self.forms[random.randint(0, 8)] + self.colors[random.randint(0, 3)]
-		if "Y" in self.to_reach:
-			self.to_reach = "Y"
+		self.board = self.fusion_tab()
+		self.target = SHAPES[random.randint(0, 8)] + COLORS[random.randint(0, 3)]
+		if "Y" in self.target:
+			self.target = "Y"
+		
 
 
 
 
-	def record_keys(self):
+
+	def record_keys(self, robots):
 		a = False
 		for event in pygame.event.get():
 			if event.type == pygame.KEYDOWN:
@@ -309,116 +210,113 @@ class Window:
 					a = True
 			
 			if event.type == pygame.MOUSEBUTTONDOWN:
-				self.button_behavior()
+				self.buttons(robots)
 
 		if a:
-			self.bot_movement()
+			if self.moving_bot != None:
+				self.bot_movement(robots)
+			else:
+				print("Veuilles sélectionner un robot.")
 
 
 
 	def allowed_movement(self, mvt):
-		place = self.board[self.bot_position[1]][self.bot_position[0]] # receives the letters of the case the bot is located on. like 'ives' or 'nsw'
-		print(place)
+		place = self.board[self.moving_bot.position[1]][self.moving_bot.position[0]] # receives the letters of the case the bot is located on. like 'ives' or 'nsw'
 		if mvt in place:
 			return True
 		else:
 			return False
+			
 
 
 
-	def next_pos(self, direc):
-		X, Y = self.bot_position[0], self.bot_position[1]
-		print("Number of moves: ", self.movements)
+	def next_pos(self, direc, robots):
+		X, Y = self.moving_bot.position[0], self.moving_bot.position[1]
+		returning = []
+		robots_positions = []
+		for robot in robots:
+			robots_positions.append(robot.position)
+
 
 		if direc == "s":
 			for i in range(1, 16 - Y):
 				place = self.board[Y + i][X]
-				if "s" not in place:
-					self.bot_pos_before = self.bot_position
-					return [X, Y + i]
+				if "s" not in place or [X, Y + i] in [robot_pos for robot_pos in robots_positions]:
+					returning = [X, Y + i]
+				if [X, Y + i] in [robot_pos for robot_pos in robots_positions]:
+					returning = [X, Y + i - 1]
+				if returning != []:
+					return returning
 
 		if direc == "n":
 			for i in range(1, Y + 1):
 				place = self.board[Y - i][X]
-				if "n" not in place:
-					self.bot_pos_before = self.bot_position
-					return [X, Y - i]
+				if "n" not in place or [X, Y - i] in [robot_pos for robot_pos in robots_positions]:
+					returning = [X, Y - i]
+				if [X, Y - i] in [robot_pos for robot_pos in robots_positions]:
+					returning = [X, Y - i + 1]
+				if returning != []:
+					return returning
 
 		if direc == "e":
 			for i in range(1, 16 - X + 1):
 				place = self.board[Y][X + i]
 				if "e" not in place:
-					self.bot_pos_before = self.bot_position
-					return [X + i, Y]
+					returning = [X + i, Y]
+				if [X + i, Y] in [robot_pos for robot_pos in robots_positions]:
+					returning = [X + i - 1, Y]
+				if returning != []:
+					return returning
 
 		if direc == "w":
 			for i in range(1, X + 1):
 				place = self.board[Y][X - i]
-				if "w" not in place:
-					self.bot_pos_before = self.bot_position
-					return [X - i, Y]
+				if "w" not in place or [X - i, Y] in [robot_pos for robot_pos in robots_positions]:
+					returning = [X - i, Y]
+				if [X - i, Y] in [robot_pos for robot_pos in robots_positions]:
+					returning = [X - i + 1, Y]
+				if returning != []:
+					return returning
 
 
 
 
 
 
-	def bot_movement(self):
-		next_position = self.bot_position
+	def bot_movement(self, robots):
+		next_position = self.moving_bot.position
 		if self.south:
 			self.south = False
 			if self.allowed_movement("s"):
-				print("PROCHAIN DEPLACEMENT: s")
 				self.movements += 1
-				next_position = self.next_pos("s")
+				next_position = self.next_pos("s", robots)
 
 		elif self.north:
 			self.north = False
 			if self.allowed_movement("n"):
-				print("PROCHAIN DEPLACEMENT: n")
 				self.movements += 1
-				next_position = self.next_pos("n")
+				next_position = self.next_pos("n", robots)
 
 		elif self.east:
 			self.east = False
 			if self.allowed_movement("e"):
-				print("PROCHAIN DEPLACEMENT: e")
 				self.movements += 1
-				next_position = self.next_pos("e")
+				next_position = self.next_pos("e", robots)
 
 		elif self.west:
 			self.west = False
 			if self.allowed_movement("w"):
-				print("PROCHAIN DEPLACEMENT: w")
 				self.movements += 1
-				next_position = self.next_pos("w")
+				next_position = self.next_pos("w", robots)
 
-		self.bot_position = next_position
-
-
-
-	def init_robot(self):
-		x = random.randint(0, 15)
-		y = random.randint(0, 15)
-		self.bot_position = [x, y]
-		place = self.board[y][x]
-		# tests to make sure the robot doesn't spawn on a shape or in the middle
-		for i in self.forms:
-			if i in place:
-				return False
-		if "0" in place:
-			return False
-		return True
+		self.moving_bot.position = next_position
+		print(f"\rNumber of moves: {self.movements}\t\t\t\t\t\t\t\t\t\t", end='')
 
 
 
-	def disp_robot(self, fenetre):
-		img = pygame.transform.scale(pygame.image.load(f"img/pion_bleu.jpg"), (46, 48))
-		fenetre.blit(img, (self.bot_position[0]*64 + 6, self.bot_position[1]*64 + 6))
 
 
-
-	def init_inputs(self, fenetre):
+	def display_inputs(self, fenetre):
 		font = pygame.font.SysFont("Arial", 24)
 		for text in self.to_draw:
 			coords = self.to_draw[text][0]
@@ -434,47 +332,105 @@ class Window:
 
 
 
-	def button_behavior(self):
+	def buttons(self, robots):
 		x, y = pygame.mouse.get_pos()
 		if pygame.mouse.get_pressed()[0]:
 			for name in self.to_draw:
 				coords = self.to_draw[name][0]
 				size = self.to_draw[name][1]
 				var = self.to_draw[name][3]
-				# when the click is done, check if the click in one of the boxes.
+
+				# when the click is done, check if the click is in one of the boxes.
 				if (coords[0] <= x <= coords[0] + size[0]) and (coords[1] <= y <= coords[1] + size[1]):
 					if "Robot" in name:
-						self.set_robot_false()
-						locals()[var] = True # sets the bot of the corresponding color of the button clicked to True so it can start moving
+						self.set_draw_rect_false()
+						color = var.split('_')[1]
+						for robot in robots:
+							if robot.color == color:
+								robot.moving = True
+								self.moving_bot = robot
+						self.to_draw[name][4] = True
 					elif name == "Submit":
-						# exit the programm or something and check if the player is on the requetes tile
-						pass
+						self.submit(robots)
 					elif name == "Reset":
 						pass
-						self.reset_board() # à coder
-					print(f"Bouton {var} pressé.")
+						self.reset_board(robots)
+
+	def set_draw_rect_false(self):
+		for i in self.to_draw:
+			self.to_draw[i][4] = False
 
 
-
-
-	def set_robot_false(self):
-		self.bot_v = False
-		self.bot_b = False
-		self.bot_j = False
-		self.bot_r = False
-
-
-
-	def display_anything(self, fenetre, coords, scale, image):
-		img = pygame.transform.scale(pygame.image.load(image), scale)
-		fenetre.blit(img, coords)
-
-
-
-
-	def reset_board(self):
+	def reset_board(self, robots):
+		for robot in robots:
+			robot.position = robot.spawn_position
 		self.movements = 0
-		# stocker les coordonnées initiales des robots pour les remettres à zéro ici.
+
+
+	def submit(self, robots):
+		end = False
+		for robot in robots:
+			X = robot.position[0]
+			Y = robot.position[1]
+			if self.target in self.board[Y][X] and robot.color in self.target:
+				print(f"\nLe robot {DICO[robot.color]} à atteint la cible en {self.movements} coup(s).")
+				end = True
+		if not end:
+			print("\nVous n'avez pas atteint la cible.")
+		else:
+			pygame.quit()
+			quit()
+
+
+
+
+class Robot(object):
+	#this will be one robot
+	def __init__(self, color, position):
+		self.position = position
+		self.spawn_position = position
+		self.color = color
+		self.moving = False
+
+
+
+def set_robot_false(robots):
+	for robot in robots:
+		robot.moving = False
+
+
+
+
+def init_robots(game):
+	robots = []
+	for i in range(4):
+		x = random.randint(0, 15)
+		y = random.randint(0, 15)
+		bot_tile = game.board[y][x]
+		bot = [x, y]
+		while ((bot in robots) or ("0" in bot_tile) or (bot_tile[0] in SHAPES)):
+			x = random.randint(0, 15)
+			y = random.randint(0, 15)
+			bot_tile = game.board[y][x]
+			bot = [x, y]
+		robots.append([x, y])
+
+	return robots
+
+
+def disp_robots(robots, fenetre):
+	for robot in robots:
+		img = pygame.transform.scale(pygame.image.load("img/pion_{}.jpg".format(DICO[robot.color])), (46, 48))
+		fenetre.blit(img, (robot.position[0]*64 + 9, robot.position[1]*64 + 8))
+
+
+
+
+def display_anything(fenetre, coords, scale, image):
+	img = pygame.transform.scale(pygame.image.load(image), scale)
+	fenetre.blit(img, coords)
+
+
 
 
 
@@ -486,26 +442,24 @@ def main():
 	fenetre = pygame.display.set_mode((largeur, hauteur))
 	pygame.display.set_caption('Rasende roboter')
 
-	win = Window()
 	fenetre.fill((0,0,0))
 
-	win.init_board()
-	win.fenetre = fenetre
-	result = win.init_robot()
-	while not result:
-		result = win.init_robot()
+	board = Board()
+	board.init_board(fenetre)
 
+	robots = []
+	for index, bot_pos in enumerate(init_robots(board)):
+		robots.append(Robot(COLORS[index], bot_pos)) # creates a list of the 4 robots with different positions and colors.
 
+	
 	while True:
-		win.display_board(fenetre, win.angle)
-		win.disp_robot(fenetre)
-		win.record_keys()
-		win.init_inputs(fenetre)
+		set_robot_false(robots)
+		board.display_board(fenetre)
+		board.display_inputs(fenetre)
+		disp_robots(robots, fenetre)
+		board.record_keys(robots)
 		pygame.display.update()
-
-
-
-
+		
 
 
 if __name__ == '__main__':
@@ -514,14 +468,12 @@ if __name__ == '__main__':
 #  / modifier le design des sprites? trait gris ? bords ronds ?
 #! / pour thomas: couleur du symbole, le type de symbole, 
 #  / permettre a thomas de l'utiliser comme un outil: acces au tableau, a la position de pions...
-#! / implémenter les 3 autres robots /!\ les robots ont des hitbox (issou)
-#  / mettre des boites de dialogue
+#! O implémenter les 3 autres robots /!\ les robots ont des hitbox (issou)
 #  O générer une cible aléatoire
 #  O faire la cible joker
-#! / compter les points
-#! / bouton revenir a la case départ?
+#! O compter les points
+#! O bouton revenir a la case départ?
 #! / timer qui s'affiche ? en lien avec au-dessus
-#! O faire tourner les boards a,b,c,d
-#! O Faire tourner les cases en fonction du nombre de rotations !
+#! / faire tourner les boards a,b,c,d
+#! / Faire tourner les cases en fonction du nombre de rotations !
 #! O Arranger les lettres des cases pour charger les images
-#! / rotation pas bonne pour certaines tiles (presque toutes en fait)
