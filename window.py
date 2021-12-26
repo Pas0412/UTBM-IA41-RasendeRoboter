@@ -86,7 +86,7 @@ class Board:
 					["nse","swen","swen","swen","swen","swen","swen","swen"],
 					["ns","trne","swen","swen","swen","swen","swen","swen"],
 					["nse","swe","swen","swen","swen","new","swen","swen"],
-					["ne","swen","swen","swen","nsw","cjes","swen","swen"],
+					["ne","swen","swen","swen","nsw","cjse","swen","swen"],
 					["se","swen","swen","ibnw","nse","swen","swen","new"],
 					["nse","swen","swen","swe","swen","swen","nsw","0"]]
 
@@ -96,11 +96,11 @@ class Board:
 					["nse","swe","swen","swen","new","swen","swen","swen"],
 					["ne","swen","new","swen","irsw","nse","swen","swen"],
 					["se","swen","YYsw","nse","swen","swen","new","swen"],
-					["nse","swen","swen","swen","swen","nsw","tjes","swen"],
+					["nse","swen","swen","swen","swen","nsw","tjse","swen"],
 					["ne","new","new","nw","ne","new","new","new"]]
 
 		self.tab_c = [["sw","se","swe","ew","swe","swe","swe","sw"],
-					["swen","swen","nsw","ores","swen","swen","swen","nw"],
+					["swen","swen","nsw","orse","swen","swen","swen","nw"],
 					["swen","swen","swen","swen","swen","swen","new","sw"],
 					["swen","swen","swen","swen","swen","swen","tvsw","ns"],
 					["swen","cbnw","nse","swen","swen","swen","swen","nsw"],
@@ -110,7 +110,7 @@ class Board:
 
 		self.tab_d = [["0","nse","swen","swen","swen","swen","swen","nsw"],
 					["swe","swen","swen","new","swen","swen","swen","nsw"],
-					["swen","swen","nsw","ives","swen","swen","swen","nsw"],
+					["swen","swen","nsw","ivse","swen","swen","swen","nsw"],
 					["swen","swen","new","swen","nsw","crne","swen","nw"],
 					["swen","swen","tbsw","nse","swen","swe","swen","sw"],
 					["swen","swen","swen","swen","ojnw","nse","swen","nsw"],
@@ -178,6 +178,169 @@ class Board:
 			tab2.append(self.tab_b[i] + self.tab_d[i])
 		return tab1 + tab2
 
+	def rotate_tabs(self, tab):
+		final_tab = []
+
+	def change_sqaure_dir(self, square):
+		if square == 'se':
+			return 'sw'
+		elif square == 'sw':
+			return 'nw'
+		elif square == 'ne':
+			return 'se'
+		elif square == 'ns':
+			return 'ew'
+		elif square == 'nw':
+			return 'se'
+		elif square == 'ew':
+			return 'ns'
+		elif square == 'new':
+			return 'nse'
+		elif square == 'swe':
+			return 'nsw'
+		elif square == 'nsw':
+			return 'new'
+		elif square == 'nse':
+			return 'swe'
+		elif square == 'cbse':
+			return 'cbsw'
+		elif square == 'cbsw':
+			return 'cbnw'
+		elif square == 'cbne':
+			return 'cbse'
+		elif square == 'cbnw':
+			return 'cbne'
+		elif square == 'cjse':
+			return 'cjsw'
+		elif square == 'cjsw':
+			return 'cjnw'
+		elif square == 'cjne':
+			return 'cjse'
+		elif square == 'cjnw':
+			return 'cjne'
+		elif square == 'crse':
+			return 'crsw'
+		elif square == 'crsw':
+			return 'crnw'
+		elif square == 'crne':
+			return 'crse'
+		elif square == 'crnw':
+			return 'crne'
+		elif square == 'cvse':
+			return 'cvsw'
+		elif square == 'cvsw':
+			return 'cvnw'
+		elif square == 'cvne':
+			return 'cvse'
+		elif square == 'cvnw':
+			return 'cvne'
+		elif square == 'ijse':
+			return 'ijsw'
+		elif square == 'ijsw':
+			return 'ijnw'
+		elif square == 'ijne':
+			return 'ijse'
+		elif square == 'ijnw':
+			return 'ijne'
+		elif square == 'ibse':
+			return 'ibsw'
+		elif square == 'ibsw':
+			return 'ibnw'
+		elif square == 'ibne':
+			return 'ibse'
+		elif square == 'ibnw':
+			return 'ibne'
+		elif square == 'irse':
+			return 'irsw'
+		elif square == 'irsw':
+			return 'irnw'
+		elif square == 'irne':
+			return 'irse'
+		elif square == 'irnw':
+			return 'irne'
+		elif square == 'ivse':
+			return 'ivsw'
+		elif square == 'ivsw':
+			return 'ivnw'
+		elif square == 'ivne':
+			return 'ivse'
+		elif square == 'ivnw':
+			return 'ivne'
+		elif square == 'ojse':
+			return 'ojsw'
+		elif square == 'ojsw':
+			return 'ojnw'
+		elif square == 'ojne':
+			return 'ojse'
+		elif square == 'ojnw':
+			return 'ojne'
+		elif square == 'obse':
+			return 'obsw'
+		elif square == 'obsw':
+			return 'obnw'
+		elif square == 'obne':
+			return 'obse'
+		elif square == 'obnw':
+			return 'obne'
+		elif square == 'orse':
+			return 'orsw'
+		elif square == 'orsw':
+			return 'ornw'
+		elif square == 'orne':
+			return 'orse'
+		elif square == 'ornw':
+			return 'orne'
+		elif square == 'ovse':
+			return 'ovsw'
+		elif square == 'ovsw':
+			return 'ovnw'
+		elif square == 'ovne':
+			return 'ovse'
+		elif square == 'ovnw':
+			return 'ovne'
+		elif square == 'tjse':
+			return 'tjsw'
+		elif square == 'tjsw':
+			return 'tjnw'
+		elif square == 'tjne':
+			return 'tjse'
+		elif square == 'tjnw':
+			return 'tjne'
+		elif square == 'tbse':
+			return 'tbsw'
+		elif square == 'tbsw':
+			return 'tbnw'
+		elif square == 'tbne':
+			return 'tbse'
+		elif square == 'tbnw':
+			return 'tbne'
+		elif square == 'trse':
+			return 'trsw'
+		elif square == 'trsw':
+			return 'trnw'
+		elif square == 'trne':
+			return 'trse'
+		elif square == 'trnw':
+			return 'trne'
+		elif square == 'tvse':
+			return 'tvsw'
+		elif square == 'tvsw':
+			return 'tvnw'
+		elif square == 'tvne':
+			return 'tvse'
+		elif square == 'tvnw':
+			return 'tvne'
+		elif square == 'YYse':
+			return 'YYsw'
+		elif square == 'YYsw':
+			return 'YYnw'
+		elif square == 'YYne':
+			return 'YYse'
+		elif square == 'YYnw':
+			return 'YYne'
+
+
+
 
 
 	def init_board(self, fenetre):
@@ -221,12 +384,29 @@ class Board:
 
 
 	def allowed_movement(self, mvt):
-		place = self.board[self.moving_bot.position[1]][self.moving_bot.position[0]] # receives the letters of the case the bot is located on. like 'ives' or 'nsw'
+		place = self.board[self.moving_bot.position[1]][self.moving_bot.position[0]] # receives the letters of the case the bot is located on. like 'ivse' or 'nsw'
 		if mvt in place:
 			return True
 		else:
 			return False
-			
+
+	#rotate tabs
+	#TODO: give a origin order of tabs
+	def tab_order(self, rotations, order):
+		tmp = []
+		tmp = order
+		if rotations == 1:
+			order = (tmp[2], tmp[0],
+					 tmp[3], tmp[1])
+		elif rotations == 2:
+			order = (tmp[3], tmp[2],
+					 tmp[1], tmp[0])
+		elif rotations == 3:
+			order = (tmp[1], tmp[3],
+					 tmp[0], tmp[2])
+		elif rotations == 4:
+			order = (tmp[0], tmp[1],
+					 tmp[2], tmp[3])
 
 
 
