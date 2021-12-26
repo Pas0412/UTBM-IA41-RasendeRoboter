@@ -178,9 +178,14 @@ class Board:
 			tab2.append(self.tab_b[i] + self.tab_d[i])
 		return tab1 + tab2
 
+	#add function of tab's rotation, require parameter of tab
 	def rotate_tabs(self, tab):
 		final_tab = []
+		for i,j in range (tab):
+			final_tab[i][j] = change_sqaure_dir(tab[i][j])
+		return final_tab
 
+	#add function of square's direction changing, require parameter of square(string)
 	def change_sqaure_dir(self, square):
 		if square == 'se':
 			return 'sw'
@@ -390,23 +395,38 @@ class Board:
 		else:
 			return False
 
-	#rotate tabs
+	#rotate tabs, give a new order of tabs accroding to value of rotations(times of rotate)
 	#TODO: give a origin order of tabs
 	def tab_order(self, rotations, order):
 		tmp = []
 		tmp = order
 		if rotations == 1:
+			for i in range(tmp):
+				tmp[i] = rotate_tabs(tmp[i])
 			order = (tmp[2], tmp[0],
 					 tmp[3], tmp[1])
 		elif rotations == 2:
+			for i in range(tmp):
+				tmp[i] = rotate_tabs(tmp[i])
+				tmp[i] = rotate_tabs(tmp[i])
 			order = (tmp[3], tmp[2],
 					 tmp[1], tmp[0])
 		elif rotations == 3:
+			for i in range(tmp):
+				tmp[i] = rotate_tabs(tmp[i])
+				tmp[i] = rotate_tabs(tmp[i])
+				tmp[i] = rotate_tabs(tmp[i])
 			order = (tmp[1], tmp[3],
 					 tmp[0], tmp[2])
 		elif rotations == 4:
+			for i in range(tmp):
+				tmp[i] = rotate_tabs(tmp[i])
+				tmp[i] = rotate_tabs(tmp[i])
+				tmp[i] = rotate_tabs(tmp[i])
+				tmp[i] = rotate_tabs(tmp[i])
 			order = (tmp[0], tmp[1],
 					 tmp[2], tmp[3])
+		return order
 
 
 
