@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 import time
 import random
-
+print("Rasende Roboter")
 
 """
 colors:
@@ -25,39 +25,11 @@ w: west
 
 other:
 0: empty (middle square)
-Y: Joker ?
+Y: Joker
 """
 
 DICO = {"b":"bleu", "v":"vert", "r":"rouge", "j":"jaune"}
 
-ROTATE_MATRIX = [
-    56, 48, 40, 32, 24, 16,  8,  0, 
-    57, 49, 41, 33, 25, 17,  9,  1, 
-    58, 50, 42, 34, 26, 18, 10,  2, 
-    59, 51, 43, 35, 27, 19, 11,  3, 
-    60, 52, 44, 36, 28, 20, 12,  4, 
-    61, 53, 45, 37, 29, 21, 13,  5, 
-    62, 54, 46, 38, 30, 22, 14,  6, 
-    63, 55, 47, 39, 31, 23, 15,  7,
-]
-ROTATE_MATRIX_16 = [
-		240, 224, 208, 192, 176, 160, 144, 128, 112, 96, 80, 64, 48, 32, 16, 0, 
-		241, 225, 209, 193, 177, 161, 145, 129, 113, 97, 81, 65, 49, 33, 17, 1, 
-		242, 226, 210, 194, 178, 162, 146, 130, 114, 98, 82, 66, 50, 34, 18, 2, 
-		243, 227, 211, 195, 179, 163, 147, 131, 115, 99, 83, 67, 51, 35, 19, 3, 
-		244, 228, 212, 196, 180, 164, 148, 132, 116, 100, 84, 68, 52, 36, 20, 4, 
-		245, 229, 213, 197, 181, 165, 149, 133, 117, 101, 85, 69, 53, 37, 21, 5, 
-		246, 230, 214, 198, 182, 166, 150, 134, 118, 102, 86, 70, 54, 38, 22, 6, 
-		247, 231, 215, 199, 183, 167, 151, 135, 119, 103, 87, 71, 55, 39, 23, 7, 
-		248, 232, 216, 200, 184, 168, 152, 136, 120, 104, 88, 72, 56, 40, 24, 8, 
-		249, 233, 217, 201, 185, 169, 153, 137, 121, 105, 89, 73, 57, 41, 25, 9, 
-		250, 234, 218, 202, 186, 170, 154, 138, 122, 106, 90, 74, 58, 42, 26, 10, 
-		251, 235, 219, 203, 187, 171, 155, 139, 123, 107, 91, 75, 59, 43, 27, 11, 
-		252, 236, 220, 204, 188, 172, 156, 140, 124, 108, 92, 76, 60, 44, 28, 12, 
-		253, 237, 221, 205, 189, 173, 157, 141, 125, 109, 93, 77, 61, 45, 29, 13, 
-		254, 238, 222, 206, 190, 174, 158, 142, 126, 110, 94, 78, 62, 46, 30, 14, 
-		255, 239, 223, 207, 191, 175, 159, 143, 127, 111, 95, 79, 63, 47, 31, 15
-]
 
 
 CORRESP = {	"wnes": ["wnes", "swne", "eswn", "nesw"],
@@ -78,7 +50,6 @@ SHAPES = "icotYicot"
 COLORS = "bvrj"
 
 
-
 class Board:
 	def __init__(self):
 		self.tab_a = [["se","sw","se","swe","ew","swe","swe","swe"],
@@ -86,7 +57,7 @@ class Board:
 					["nse","swen","swen","swen","swen","swen","swen","swen"],
 					["ns","trne","swen","swen","swen","swen","swen","swen"],
 					["nse","swe","swen","swen","swen","new","swen","swen"],
-					["ne","swen","swen","swen","nsw","cjse","swen","swen"],
+					["ne","swen","swen","swen","nsw","cjes","swen","swen"],
 					["se","swen","swen","ibnw","nse","swen","swen","new"],
 					["nse","swen","swen","swe","swen","swen","nsw","0"]]
 
@@ -96,11 +67,11 @@ class Board:
 					["nse","swe","swen","swen","new","swen","swen","swen"],
 					["ne","swen","new","swen","irsw","nse","swen","swen"],
 					["se","swen","YYsw","nse","swen","swen","new","swen"],
-					["nse","swen","swen","swen","swen","nsw","tjse","swen"],
+					["nse","swen","swen","swen","swen","nsw","tjes","swen"],
 					["ne","new","new","nw","ne","new","new","new"]]
 
 		self.tab_c = [["sw","se","swe","ew","swe","swe","swe","sw"],
-					["swen","swen","nsw","orse","swen","swen","swen","nw"],
+					["swen","swen","nsw","ores","swen","swen","swen","nw"],
 					["swen","swen","swen","swen","swen","swen","new","sw"],
 					["swen","swen","swen","swen","swen","swen","tvsw","ns"],
 					["swen","cbnw","nse","swen","swen","swen","swen","nsw"],
@@ -110,7 +81,7 @@ class Board:
 
 		self.tab_d = [["0","nse","swen","swen","swen","swen","swen","nsw"],
 					["swe","swen","swen","new","swen","swen","swen","nsw"],
-					["swen","swen","nsw","ivse","swen","swen","swen","nsw"],
+					["swen","swen","nsw","ives","swen","swen","swen","nsw"],
 					["swen","swen","new","swen","nsw","crne","swen","nw"],
 					["swen","swen","tbsw","nse","swen","swe","swen","sw"],
 					["swen","swen","swen","swen","ojnw","nse","swen","nsw"],
@@ -138,6 +109,7 @@ class Board:
 
 		self.moving_bot = None
 
+		self.target_pos = [int(), int(), str()]
 
 
 
@@ -145,18 +117,10 @@ class Board:
 		fenetre.fill((0,0,0))
 		for Y, line in enumerate(self.board):
 			for X, case in enumerate(line):
-				try:
-					if case[0] in SHAPES:
-						img = pygame.transform.scale(pygame.image.load(f"img/{case[0:2]}_.png"), (64, 64))
-					else:
-						img = pygame.transform.scale(pygame.image.load(f"img/{case}.png"), (64, 64))
-				except Exception as e:
-					"""
-					print("|"+case+"|")
-					print(self.board)
-					"""
-					print(e)
-					quit()
+				if case[0] in SHAPES:
+					img = pygame.transform.scale(pygame.image.load(f"img/{case[0:2]}_.png"), (64, 64))
+				else:
+					img = pygame.transform.scale(pygame.image.load(f"img/{case}.png"), (64, 64))
 				fenetre.blit(img, (X*64, Y*64))
 
 		for i in self.to_draw:
@@ -178,186 +142,19 @@ class Board:
 			tab2.append(self.tab_b[i] + self.tab_d[i])
 		return tab1 + tab2
 
-	#add function of tab's rotation, require parameter of tab
-	def rotate_tabs(self, tab):
-		final_tab = []
-		for i,j in range (tab):
-			final_tab[i][j] = change_sqaure_dir(tab[i][j])
-		return final_tab
-
-	#add function of square's direction changing, require parameter of square(string)
-	def change_sqaure_dir(self, square):
-		if square == 'se':
-			return 'sw'
-		elif square == 'sw':
-			return 'nw'
-		elif square == 'ne':
-			return 'se'
-		elif square == 'ns':
-			return 'ew'
-		elif square == 'nw':
-			return 'se'
-		elif square == 'ew':
-			return 'ns'
-		elif square == 'new':
-			return 'nse'
-		elif square == 'swe':
-			return 'nsw'
-		elif square == 'nsw':
-			return 'new'
-		elif square == 'nse':
-			return 'swe'
-		elif square == 'cbse':
-			return 'cbsw'
-		elif square == 'cbsw':
-			return 'cbnw'
-		elif square == 'cbne':
-			return 'cbse'
-		elif square == 'cbnw':
-			return 'cbne'
-		elif square == 'cjse':
-			return 'cjsw'
-		elif square == 'cjsw':
-			return 'cjnw'
-		elif square == 'cjne':
-			return 'cjse'
-		elif square == 'cjnw':
-			return 'cjne'
-		elif square == 'crse':
-			return 'crsw'
-		elif square == 'crsw':
-			return 'crnw'
-		elif square == 'crne':
-			return 'crse'
-		elif square == 'crnw':
-			return 'crne'
-		elif square == 'cvse':
-			return 'cvsw'
-		elif square == 'cvsw':
-			return 'cvnw'
-		elif square == 'cvne':
-			return 'cvse'
-		elif square == 'cvnw':
-			return 'cvne'
-		elif square == 'ijse':
-			return 'ijsw'
-		elif square == 'ijsw':
-			return 'ijnw'
-		elif square == 'ijne':
-			return 'ijse'
-		elif square == 'ijnw':
-			return 'ijne'
-		elif square == 'ibse':
-			return 'ibsw'
-		elif square == 'ibsw':
-			return 'ibnw'
-		elif square == 'ibne':
-			return 'ibse'
-		elif square == 'ibnw':
-			return 'ibne'
-		elif square == 'irse':
-			return 'irsw'
-		elif square == 'irsw':
-			return 'irnw'
-		elif square == 'irne':
-			return 'irse'
-		elif square == 'irnw':
-			return 'irne'
-		elif square == 'ivse':
-			return 'ivsw'
-		elif square == 'ivsw':
-			return 'ivnw'
-		elif square == 'ivne':
-			return 'ivse'
-		elif square == 'ivnw':
-			return 'ivne'
-		elif square == 'ojse':
-			return 'ojsw'
-		elif square == 'ojsw':
-			return 'ojnw'
-		elif square == 'ojne':
-			return 'ojse'
-		elif square == 'ojnw':
-			return 'ojne'
-		elif square == 'obse':
-			return 'obsw'
-		elif square == 'obsw':
-			return 'obnw'
-		elif square == 'obne':
-			return 'obse'
-		elif square == 'obnw':
-			return 'obne'
-		elif square == 'orse':
-			return 'orsw'
-		elif square == 'orsw':
-			return 'ornw'
-		elif square == 'orne':
-			return 'orse'
-		elif square == 'ornw':
-			return 'orne'
-		elif square == 'ovse':
-			return 'ovsw'
-		elif square == 'ovsw':
-			return 'ovnw'
-		elif square == 'ovne':
-			return 'ovse'
-		elif square == 'ovnw':
-			return 'ovne'
-		elif square == 'tjse':
-			return 'tjsw'
-		elif square == 'tjsw':
-			return 'tjnw'
-		elif square == 'tjne':
-			return 'tjse'
-		elif square == 'tjnw':
-			return 'tjne'
-		elif square == 'tbse':
-			return 'tbsw'
-		elif square == 'tbsw':
-			return 'tbnw'
-		elif square == 'tbne':
-			return 'tbse'
-		elif square == 'tbnw':
-			return 'tbne'
-		elif square == 'trse':
-			return 'trsw'
-		elif square == 'trsw':
-			return 'trnw'
-		elif square == 'trne':
-			return 'trse'
-		elif square == 'trnw':
-			return 'trne'
-		elif square == 'tvse':
-			return 'tvsw'
-		elif square == 'tvsw':
-			return 'tvnw'
-		elif square == 'tvne':
-			return 'tvse'
-		elif square == 'tvnw':
-			return 'tvne'
-		elif square == 'YYse':
-			return 'YYsw'
-		elif square == 'YYsw':
-			return 'YYnw'
-		elif square == 'YYne':
-			return 'YYse'
-		elif square == 'YYnw':
-			return 'YYne'
-
-
-
 
 
 	def init_board(self, fenetre):
-
 		self.board = self.fusion_tab()
 		self.target = SHAPES[random.randint(0, 8)] + COLORS[random.randint(0, 3)]
+		for Y, line in enumerate(self.board):
+			for X, tile in enumerate(line):
+				if self.target in tile:
+					self.target_pos = [X, Y, self.target[1]]
+
 		if "Y" in self.target:
 			self.target = "Y"
 		
-
-
-
 
 
 	def record_keys(self, robots):
@@ -378,7 +175,9 @@ class Board:
 					a = True
 			
 			if event.type == pygame.MOUSEBUTTONDOWN:
-				self.buttons(robots)
+				ret = self.buttons(robots)
+				if ret == "end":
+					return "end"
 
 		if a:
 			if self.moving_bot != None:
@@ -389,44 +188,12 @@ class Board:
 
 
 	def allowed_movement(self, mvt):
-		place = self.board[self.moving_bot.position[1]][self.moving_bot.position[0]] # receives the letters of the case the bot is located on. like 'ivse' or 'nsw'
+		place = self.board[self.moving_bot.position[1]][self.moving_bot.position[0]] # receives the letters of the case the bot is located on. like 'ives' or 'nsw'
 		if mvt in place:
 			return True
 		else:
 			return False
-
-	#rotate tabs, give a new order of tabs accroding to value of rotations(times of rotate)
-	#TODO: give a origin order of tabs
-	def tab_order(self, rotations, order):
-		tmp = []
-		tmp = order
-		if rotations == 1:
-			for i in range(tmp):
-				tmp[i] = rotate_tabs(tmp[i])
-			order = (tmp[2], tmp[0],
-					 tmp[3], tmp[1])
-		elif rotations == 2:
-			for i in range(tmp):
-				tmp[i] = rotate_tabs(tmp[i])
-				tmp[i] = rotate_tabs(tmp[i])
-			order = (tmp[3], tmp[2],
-					 tmp[1], tmp[0])
-		elif rotations == 3:
-			for i in range(tmp):
-				tmp[i] = rotate_tabs(tmp[i])
-				tmp[i] = rotate_tabs(tmp[i])
-				tmp[i] = rotate_tabs(tmp[i])
-			order = (tmp[1], tmp[3],
-					 tmp[0], tmp[2])
-		elif rotations == 4:
-			for i in range(tmp):
-				tmp[i] = rotate_tabs(tmp[i])
-				tmp[i] = rotate_tabs(tmp[i])
-				tmp[i] = rotate_tabs(tmp[i])
-				tmp[i] = rotate_tabs(tmp[i])
-			order = (tmp[0], tmp[1],
-					 tmp[2], tmp[3])
-		return order
+			
 
 
 
@@ -435,15 +202,14 @@ class Board:
 		returning = []
 		robots_positions = []
 		for robot in robots:
-			robots_positions.append(robot.position)
-
+			robots_positions.append(robot.position[0:2])
 
 		if direc == "s":
 			for i in range(1, 16 - Y):
 				place = self.board[Y + i][X]
-				if "s" not in place or [X, Y + i] in [robot_pos for robot_pos in robots_positions]:
+				if "s" not in place or [X, Y + i] in robots_positions:
 					returning = [X, Y + i]
-				if [X, Y + i] in [robot_pos for robot_pos in robots_positions]:
+				if [X, Y + i] in robots_positions:
 					returning = [X, Y + i - 1]
 				if returning != []:
 					return returning
@@ -451,9 +217,9 @@ class Board:
 		if direc == "n":
 			for i in range(1, Y + 1):
 				place = self.board[Y - i][X]
-				if "n" not in place or [X, Y - i] in [robot_pos for robot_pos in robots_positions]:
+				if "n" not in place or [X, Y - i] in robots_positions:
 					returning = [X, Y - i]
-				if [X, Y - i] in [robot_pos for robot_pos in robots_positions]:
+				if [X, Y - i] in robots_positions:
 					returning = [X, Y - i + 1]
 				if returning != []:
 					return returning
@@ -463,7 +229,7 @@ class Board:
 				place = self.board[Y][X + i]
 				if "e" not in place:
 					returning = [X + i, Y]
-				if [X + i, Y] in [robot_pos for robot_pos in robots_positions]:
+				if [X + i, Y] in robots_positions:
 					returning = [X + i - 1, Y]
 				if returning != []:
 					return returning
@@ -471,9 +237,9 @@ class Board:
 		if direc == "w":
 			for i in range(1, X + 1):
 				place = self.board[Y][X - i]
-				if "w" not in place or [X - i, Y] in [robot_pos for robot_pos in robots_positions]:
+				if "w" not in place or [X - i, Y] in robots_positions:
 					returning = [X - i, Y]
-				if [X - i, Y] in [robot_pos for robot_pos in robots_positions]:
+				if [X - i, Y] in robots_positions:
 					returning = [X - i + 1, Y]
 				if returning != []:
 					return returning
@@ -485,31 +251,31 @@ class Board:
 
 	def bot_movement(self, robots):
 		next_position = self.moving_bot.position
+		ret = next_position
 		if self.south:
 			self.south = False
 			if self.allowed_movement("s"):
-				self.movements += 1
-				next_position = self.next_pos("s", robots)
+				ret = self.next_pos("s", robots)
 
 		elif self.north:
 			self.north = False
 			if self.allowed_movement("n"):
-				self.movements += 1
-				next_position = self.next_pos("n", robots)
+				ret = self.next_pos("n", robots)
 
 		elif self.east:
 			self.east = False
 			if self.allowed_movement("e"):
-				self.movements += 1
-				next_position = self.next_pos("e", robots)
+				ret = self.next_pos("e", robots)
 
 		elif self.west:
 			self.west = False
 			if self.allowed_movement("w"):
-				self.movements += 1
-				next_position = self.next_pos("w", robots)
+				ret = self.next_pos("w", robots)
 
-		self.moving_bot.position = next_position
+		if ret != next_position:
+			self.movements += 1
+
+		self.moving_bot.position = ret
 		print(f"\rNumber of moves: {self.movements}\t\t\t\t\t\t\t\t\t\t", end='')
 
 
@@ -551,7 +317,8 @@ class Board:
 								self.moving_bot = robot
 						self.to_draw[name][4] = True
 					elif name == "Submit":
-						self.submit(robots)
+						if self.submit(robots):
+							return "end"
 					elif name == "Reset":
 						pass
 						self.reset_board(robots)
@@ -572,16 +339,14 @@ class Board:
 		for robot in robots:
 			X = robot.position[0]
 			Y = robot.position[1]
-			if self.target in self.board[Y][X] and robot.color in self.target:
+			if self.target in self.board[Y][X] and (robot.color in self.target or "Y" in self.target):
 				print(f"\nLe robot {DICO[robot.color]} à atteint la cible en {self.movements} coup(s).")
 				end = True
 		if not end:
 			print("\nVous n'avez pas atteint la cible.")
+			return False
 		else:
-			pygame.quit()
-			quit()
-
-
+			return True
 
 
 class Robot(object):
@@ -618,6 +383,7 @@ def init_robots(game):
 	return robots
 
 
+
 def disp_robots(robots, fenetre):
 	for robot in robots:
 		img = pygame.transform.scale(pygame.image.load("img/pion_{}.jpg".format(DICO[robot.color])), (46, 48))
@@ -631,49 +397,15 @@ def display_anything(fenetre, coords, scale, image):
 	fenetre.blit(img, coords)
 
 
+def show_ia_moves(movements, robots, fenetre, board):
+	for state in movements:
+		for new_bot_pos in state[0:4]:
+			for bot in robots:
+				if bot.color == new_bot_pos[2]:
+					bot.position = [new_bot_pos[0], new_bot_pos[1]]
+					board.display_board(fenetre)
+					disp_robots(robots, fenetre)
+					pygame.display.update()
+					time.sleep(1)
 
 
-
-def main():
-
-	pygame.init()
-	largeur = 1424
-	hauteur = 1024
-	fenetre = pygame.display.set_mode((largeur, hauteur))
-	pygame.display.set_caption('Rasende roboter')
-
-	fenetre.fill((0,0,0))
-
-	board = Board()
-	board.init_board(fenetre)
-
-	robots = []
-	for index, bot_pos in enumerate(init_robots(board)):
-		robots.append(Robot(COLORS[index], bot_pos)) # creates a list of the 4 robots with different positions and colors.
-
-	
-	while True:
-		set_robot_false(robots)
-		board.display_board(fenetre)
-		board.display_inputs(fenetre)
-		disp_robots(robots, fenetre)
-		board.record_keys(robots)
-		pygame.display.update()
-		
-
-
-if __name__ == '__main__':
-	main()
-
-#  / modifier le design des sprites? trait gris ? bords ronds ?
-#! / pour thomas: couleur du symbole, le type de symbole, 
-#  / permettre a thomas de l'utiliser comme un outil: acces au tableau, a la position de pions...
-#! O implémenter les 3 autres robots /!\ les robots ont des hitbox (issou)
-#  O générer une cible aléatoire
-#  O faire la cible joker
-#! O compter les points
-#! O bouton revenir a la case départ?
-#! / timer qui s'affiche ? en lien avec au-dessus
-#! / faire tourner les boards a,b,c,d
-#! / Faire tourner les cases en fonction du nombre de rotations !
-#! O Arranger les lettres des cases pour charger les images
