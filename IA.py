@@ -1,4 +1,6 @@
 import itertools
+import time
+import json
 
 # Liste vide
 class L:
@@ -38,26 +40,10 @@ class L:
         return self.List
 
 
-Listobstacle=[['se', 'sw', 'se', 'swe', 'ew', 'swe', 'swe', 'swe', 'sw', 'se', 'swe', 'ew', 'swe', 'swe', 'swe', 'sw'],
-['nse', 'swen', 'swen', 'swen', 'ovsw', 'nse', 'swen', 'swen', 'swen', 'swen', 'nsw', 'ores', 'swen', 'swen', 'swen', 'nw'], 
-['nse', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'new', 'sw'], 
-['ns', 'trne', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'tvsw', 'ns'], 
-['nse', 'swe', 'swen', 'swen', 'swen', 'new', 'swen', 'swen', 'swen', 'cbnw', 'nse', 'swen', 'swen', 'swen', 'swen', 'nsw'], 
-['ne', 'swen', 'swen', 'swen', 'nsw', 'cjes', 'swen', 'swen', 'swen', 'swe', 'swen', 'swen', 'swen', 'swen', 'swen', 'nsw'], 
-['se', 'swen', 'swen', 'ibnw', 'nse', 'swen', 'swen', 'new', 'new', 'swen', 'swen', 'nsw', 'ijne', 'swen', 'swen', 'nsw'], 
-['nse', 'swen', 'swen', 'swe', 'swen', 'swen', 'nsw', '0', '0', 'nse', 'swen', 'swen', 'swe', 'swen', 'swen', 'nsw'], 
-['nse', 'swen', 'swen', 'swen', 'swen', 'swen', 'nsw', '0', '0', 'nse', 'swen', 'swen', 'swen', 'swen', 'swen', 'nsw'], 
-['nse', 'swen', 'swen', 'swen', 'nsw', 'cvne', 'swen', 'swe', 'swe', 'swen', 'swen', 'new', 'swen', 'swen', 'swen', 'nsw'], 
-['nse', 'obnw', 'nse', 'swen', 'swen', 'swe', 'swen', 'swen', 'swen', 'swen', 'nsw', 'ives', 'swen', 'swen', 'swen', 'nsw'], 
-['nse', 'swe', 'swen', 'swen', 'new', 'swen', 'swen', 'swen', 'swen', 'swen', 'new', 'swen', 'nsw', 'crne', 'swen', 'nw'], 
-['ne', 'swen', 'new', 'swen', 'irsw', 'nse', 'swen', 'swen', 'swen', 'swen', 'tbsw', 'nse', 'swen', 'swe', 'swen', 'sw'], 
-['se', 'swen', 'YYsw', 'nse', 'swen', 'swen', 'new', 'swen', 'swen', 'swen', 'swen', 'swen', 'ojnw', 'nse', 'swen', 'nsw'], 
-['nse', 'swen', 'swen', 'swen', 'swen', 'nsw', 'tjes', 'swen', 'swen', 'swen', 'swen', 'swen', 'swe', 'swen', 'swen', 'nsw'], 
-['ne', 'new', 'new', 'nw', 'ne', 'new', 'new', 'new', 'new', 'nw', 'ne', 'new', 'new', 'new', 'new', 'nw']]# liste de test 
 
 Listobstacledym=L()
 Listobstacledym.append([L])#a faire une fois au début
-Listrobot=[(0,0,"b"),(5,0,"r"),(0,2,"j"),(5,2,"v")]
+
 global netats
 netats=0
 def getthematrix(Listobstacle):
@@ -86,10 +72,6 @@ def movement(coordinate,mov, Listobstacle):
         ytemp=j
         while (flag0==True):
             I=xtemp+ytemp*16
-            """print(I)
-            print(xtemp)
-            print(ytemp)
-            print("")"""
             if not("n" in Listobstacle[I]):
                 flag0=False
             else:
@@ -200,28 +182,27 @@ def nextstates(actueletat, Listobstacle):
         #faire ban list et la suite d'etat, là je fais que les transitions d'états et recherche d'état
 
 
-def getthemovtowin(listallmov,listalliamov):
-    global netats
-    te=listalliamov.ret()
-    va=listalliamov.take(len(te)-1)
-    n=va[5]
-    listret=[]
-    while(n!=0):
-        val=listallmov.take(n-1)
-        listret=[val]+listret
-        n=val[4]
-    listret=[listalliamov.take(0)]+listret    
-    return listret
-
+def getthemovtowin(IAMoves):
+    final = IAMoves.List[-1]
+    moves = [final]
+    prochain = final[4]
+    for etat in reversed(IAMoves.List):
+        if etat[5] == prochain:
+            prochain = etat[4]
+            moves.append(etat)
+    return [i for i in reversed(moves)]
+            
 
 
 def BFS(et_debut,et_final, Listobstacle):
     Listobstacle = getthematrix(Listobstacle)
+    distance_initiale, _ = mesure_distance(et_debut, et_final)
     Li=L()
     test2=L()
     test=[]
     Lt=L()
     Ba=L()
+    tout_les_moves = L()
     Ba.append([et_debut])
     temp=et_debut
     temp=temp+[0,0]
@@ -229,27 +210,79 @@ def BFS(et_debut,et_final, Listobstacle):
     test2.append(et_debut)
     Li.append([temp])
     a=0
-    while(test2.isNot2(et_final)):
+    test_distance = True
+    if "Y" in et_final:
+        test_distance = False
+
+    while et_final not in test2.List:
         a+=1
-        if a%1000 == 0:print(a)
+        #if a%1000 == 0:print(a)
         temp=nextstates(temp, Listobstacle)
+        tout_les_moves.append(temp)
+        new_list = []
+        if test_distance:
+            for i, e in enumerate(temp):
+                distance, divis = mesure_distance(e, et_final)
+                if (distance <= distance_initiale + 1 or divis >= distance or divis <= 4):
+                    new_list.append(e)
+        if new_list != []:
+            temp = new_list
+
         Lt.append(temp)
-        temp=Lt.take(n)
-        test=[temp[0]]+[temp[1]]+[temp[2]]+[temp[3]]
-        if(Ba.isIn2(test)):
-            while(Ba.isIn2(test)):
-                n=n+1
-                temp=Lt.take(n)
-                test=[temp[0]]+[temp[1]]+[temp[2]]+[temp[3]]
+        temp=Lt.List[n]
+        test=temp[0:4]
+        if test in Ba.List: #(Ba.isIn2(test)):
+            while test in Ba.List: #(Ba.isIn2(test)):
+                n+=1
+                temp=Lt.List[n]
+                test=temp[0:4]
         else:
-            n=n+1
+            n+=1
+
         test2.new()
         test2.append(test)
         Ba.append([test])
         Li.append([temp])
-        
-    return (getthemovtowin(Lt,Li))
+
+    return getthemovtowin(Li)
+
+
+
+
+
+def mesure_distance(etat, etat_final):
+    # crée une distance moyenne avec un coefficient important sur la distance du robot concerné par la cible.
+    tot=0
+    divis = 0
+    for i in etat[0:4]:
+        distance = ((i[0] - etat_final[0])**2 + (i[1] - etat_final[1])**2)**0.5 # distance du robot par rapport a la cible
+        if i[2] == etat_final[2]:
+            divis = distance
+        else:
+            tot += distance
+
+    return ((tot + divis * 10) / 13, divis)
+
+
+
+
+
 
 if __name__ == '__main__':
-    pass
-    BFS([(0,0,"b"),(15,15,"r"),(15,15,"j"),(15,15,"v")],(0,12,'b'), Listobstacle)
+
+    BOARD = [['se', 'sw', 'se', 'swe', 'ew', 'swe', 'swe', 'swe', 'sw', 'se', 'swe', 'ew', 'swe', 'swe', 'swe', 'sw'], ['nse', 'swen', 'swen', 'swen', 'ovsw', 'nse', 'swen', 'swen', 'swen', 'swen', 'nsw', 'ores', 'swen', 'swen', 'swen', 'nw'], ['nse', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'new', 'sw'], ['ns', 'trne', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'swen', 'tvsw', 'ns'], ['nse', 'swe', 'swen', 'swen', 'swen', 'new', 'swen', 'swen', 'swen', 'cbnw', 'nse', 'swen', 'swen', 'swen', 'swen', 'nsw'], ['ne', 'swen', 'swen', 'swen', 'nsw', 'cjes', 'swen', 'swen', 'swen', 'swe', 'swen', 'swen', 'swen', 'swen', 'swen', 'nsw'], ['se', 'swen', 'swen', 'ibnw', 'nse', 'swen', 'swen', 'new', 'new', 'swen', 'swen', 'nsw', 'ijne', 'swen', 'swen', 'nsw'], ['nse', 'swen', 'swen', 'swe', 'swen', 'swen', 'nsw', '0', '0', 'nse', 'swen', 'swen', 'swe', 'swen', 'swen', 'nsw'], ['nse', 'swen', 'swen', 'swen', 'swen', 'swen', 'nsw', '0', '0', 'nse', 'swen', 'swen', 'swen', 'swen', 'swen', 'nsw'], ['nse', 'swen', 'swen', 'swen', 'nsw', 'cvne', 'swen', 'swe', 'swe', 'swen', 'swen', 'new', 'swen', 'swen', 'swen', 'nsw'], ['nse', 'obnw', 'nse', 'swen', 'swen', 'swe', 'swen', 'swen', 'swen', 'swen', 'nsw', 'ives', 'swen', 'swen', 'swen', 'nsw'], ['nse', 'swe', 'swen', 'swen', 'new', 'swen', 'swen', 'swen', 'swen', 'swen', 'new', 'swen', 'nsw', 'crne', 'swen', 'nw'], ['ne', 'swen', 'new', 'swen', 'irsw', 'nse', 'swen', 'swen', 'swen', 'swen', 'tbsw', 'nse', 'swen', 'swe', 'swen', 'sw'], ['se', 'swen', 'YYsw', 'nse', 'swen', 'swen', 'new', 'swen', 'swen', 'swen', 'swen', 'swen', 'ojnw', 'nse', 'swen', 'nsw'], ['nse', 'swen', 'swen', 'swen', 'swen', 'nsw', 'tjes', 'swen', 'swen', 'swen', 'swen', 'swen', 'swe', 'swen', 'swen', 'nsw'], ['ne', 'new', 'new', 'nw', 'ne', 'new', 'new', 'new', 'new', 'nw', 'ne', 'new', 'new', 'new', 'new', 'nw']]
+
+    with open("transfert", "r") as f:
+        fichier = f.read().replace("'", '"').replace("(", "[").replace(")", "]")
+    
+    robots = json.loads(str(fichier.split('||')[0]))
+    target = json.loads(fichier.split('||')[1])
+    res = BFS([tuple(i) for i in robots], tuple(target), BOARD)
+    with open("reponse", "w") as f:
+        f.write(str(res))
+
+
+
+
+# regler le probleme du mauvais nombre de coups
+
